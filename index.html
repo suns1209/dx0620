@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday DX</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:black;
+    overflow:hidden;
+}
+
+/* 🎬 封面 */
+#cover{
+    width:100%;
+    height:100vh;
+    background:linear-gradient(135deg,#ff758c,#ff7eb3);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+/* 🎂 主页面 */
+#main{
+    display:none;
+    width:100%;
+    height:100vh;
+    background:url("bg.jpg") center/cover no-repeat;
+    color:white;
+    text-align:center;
+    position:relative;
+}
+
+/* 遮罩 */
+.overlay{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.45);
+}
+
+/* 内容 */
+.content{
+    position:relative;
+    top:20%;
+}
+
+/* 蛋糕 */
+.cake{
+    font-size:90px;
+    cursor:pointer;
+}
+
+/* 字幕 */
+#text{
+    width:80%;
+    margin:auto;
+    text-align:center;
+}
+
+.line{
+    display:block;
+    font-size:20px;
+    margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 音乐 -->
+<audio id="bgm" loop preload="none">
+    <source src="music.mp3">
+</audio>
+
+<!-- 🎂 封面 -->
+<div id="cover">
+    <h1>🎂 Happy Birthday</h1>
+    <button onclick="start()">DD</button>
+</div>
+
+<!-- 🎂 主页面 -->
+<div id="main">
+    <div class="overlay"></div>
+
+    <div class="content">
+        <h1>Happy Birthday 🎉</h1>
+
+        <div class="cake" onclick="cakeClick()">🎂✨</div>
+
+        <div id="text"></div>
+    </div>
+</div>
+
+<script>
+
+const msg=[
+"丁丁，生日快乐 🎉",
+"工作顺利，烦恼少少。",
+"希望你以后年年岁岁，",
+"都能看到新的风景。",
+"遇到更多爱你的人，",
+"自由尽兴，身体健康。",
+"--------小孙 ❤️"
+];
+
+let i=0;
+let started=false;
+
+/* 🚀 开始 */
+function start(){
+
+    document.getElementById("cover").style.display="none";
+    document.getElementById("main").style.display="block";
+
+    // 🎵 音乐（点击触发，100%可播放）
+    document.getElementById("bgm").play().catch(()=>{});
+
+    typeLine();
+}
+
+/* 🎬 防重复 */
+function showMain(){
+    if(started) return;
+    started=true;
+}
+
+/* ✍️ 字幕（稳定版） */
+function typeLine(){
+
+    if(i < msg.length){
+
+        let line=document.createElement("div");
+        line.className="line";
+        document.getElementById("text").appendChild(line);
+
+        let j=0;
+
+        function typeChar(){
+            if(j < msg[i].length){
+                line.textContent += msg[i][j];
+                j++;
+                setTimeout(typeChar,90);
+            }else{
+                i++;
+                setTimeout(typeLine,500);
+            }
+        }
+
+        typeChar();
+    }
+}
+
+/* 🎂 蛋糕互动 */
+function cakeClick(){
+    document.querySelector(".cake").innerHTML="🎂💖";
+}
+
+</script>
+
+</body>
+</html>
