@@ -8,12 +8,12 @@
 <style>
 body{
     margin:0;
-    font-family:Arial;
+    font-family:Arial,sans-serif;
     background:black;
     overflow:hidden;
 }
 
-/* 封面（零资源加载） */
+/* 封面 */
 #cover{
     width:100%;
     height:100vh;
@@ -25,17 +25,25 @@ body{
     color:white;
 }
 
+#cover button{
+    padding:12px 25px;
+    font-size:20px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+}
+
 /* 主页面 */
 #main{
     display:none;
     width:100%;
     height:100vh;
+    position:relative;
     color:white;
     text-align:center;
-    position:relative;
 }
 
-/* 背景（延迟加载） */
+/* 背景 */
 .bg{
     position:absolute;
     width:100%;
@@ -46,29 +54,34 @@ body{
     transition:1s;
 }
 
-/* 遮罩 */
 .overlay{
     position:absolute;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.45);
+    background:rgba(0,0,0,.45);
 }
 
-/* 内容 */
 .content{
     position:relative;
-    top:20%;
+    z-index:2;
+    top:18%;
 }
 
-/* 蛋糕 */
 .cake{
     font-size:90px;
+    cursor:pointer;
+    user-select:none;
+    transition:.3s;
 }
 
-/* 字幕 */
+.cake:hover{
+    transform:scale(1.1);
+}
+
 #text{
-    width:80%;
+    width:85%;
     margin:auto;
+    margin-top:20px;
 }
 
 .line{
@@ -76,12 +89,45 @@ body{
     font-size:20px;
     margin:6px 0;
 }
+
+/* 图片弹窗 */
+#photoModal{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.85);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+#birthdayPhoto{
+    max-width:90%;
+    max-height:85%;
+    border-radius:15px;
+    box-shadow:0 0 30px rgba(255,255,255,.4);
+    animation:zoom .5s;
+}
+
+@keyframes zoom{
+    from{
+        transform:scale(.5);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<!-- 🎵 音乐（延迟加载） -->
+<!-- 音乐 -->
 <audio id="bgm" loop preload="none">
     <source src="music.mp3">
 </audio>
@@ -101,16 +147,22 @@ body{
     <div class="content">
         <h1>Happy Birthday 🎉</h1>
 
-        <div class="cake" onclick="cakeClick()">🎂✨</div>
+        <div class="cake" onclick="cakeClick()">
+            🎂
+        </div>
 
         <div id="text"></div>
     </div>
 
 </div>
 
+<!-- 图片弹窗 -->
+<div id="photoModal" onclick="closePhoto()">
+    <img src="photo.webp" id="birthdayPhoto">
+</div>
+
 <script>
 
-/* 文案 */
 const msg=[
 "丁丁，生日快乐 🎉",
 "工作顺利，烦恼少少。",
@@ -122,58 +174,80 @@ const msg=[
 ];
 
 let i=0;
-let started=false;
 
-/* 🚀 启动 */
+/* 启动 */
 function start(){
 
     document.getElementById("cover").style.display="none";
     document.getElementById("main").style.display="block";
 
-    /* ⭐ 音乐延迟加载 */
     const bgm=document.getElementById("bgm");
-    bgm.load();
-    bgm.play().catch(()=>{});
 
-    /* ⭐ 背景延迟加载（关键优化） */
+    bgm.load();
+
+    bgm.play().catch(()=>{
+        console.log("等待用户允许播放");
+    });
+
     setTimeout(()=>{
-        document.getElementById("bg").style.backgroundImage="url(bg.webp)";
-        document.getElementById("bg").style.opacity="1";
+        const bg=document.getElementById("bg");
+        bg.style.backgroundImage="url(bg.webp)";
+        bg.style.opacity="1";
     },100);
 
     typeLine();
 }
 
-/* ✍️ 字幕 */
+/* 打字效果 */
 function typeLine(){
 
-    if(i >= msg.length) return;
+    if(i>=msg.length) return;
 
     let line=document.createElement("div");
     line.className="line";
+
     document.getElementById("text").appendChild(line);
 
     let j=0;
 
     function typing(){
-        if(j < msg[i].length){
-            line.textContent += msg[i][j];
+
+        if(j<msg[i].length){
+
+            line.textContent+=msg[i][j];
+
             j++;
+
             setTimeout(typing,85);
+
         }else{
+
             i++;
+
             setTimeout(typeLine,500);
+
         }
+
     }
 
     typing();
 }
 
-/* 🎂 蛋糕 */
+/* 点击蛋糕 */
 function cakeClick(){
-    document.querySelector(".cake").innerHTML="🎂💖";
+
+    const cake=document.querySelector(".cake");
+
+    cake.innerHTML="🕯️🎂";
+
+    document.getElementById("photoModal").style.display="flex";
 }
 
+/* 关闭图片 */
+function closePhoto(){
+
+    document.getElementById("photoModal").style.display="none";
+}
 </script>
 
 </body>
